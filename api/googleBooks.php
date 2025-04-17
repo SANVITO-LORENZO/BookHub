@@ -46,4 +46,39 @@ class GoogleBooksApi {
 
         return $risultati;
     }
+
+    public static function cercaGoogleBooksAvanzata($query, $lingua = 'it') {
+        $baseUrl = 'https://www.googleapis.com/books/v1/volumes';
+        $params = [
+            'q' => $query,
+            'langRestrict' => $lingua,
+            'printType' => 'books',
+            'maxResults' => 12,
+            'key' => self::$apiKey
+        ];
+    
+        $url = $baseUrl . '?' . http_build_query($params);
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+    
+        $risultati = [];
+    
+        if (!empty($data['items'])) {
+            foreach ($data['items'] as $item) {
+                $info = $item['volumeInfo'];
+    
+                $risultati[] = [
+                    'titolo' => $info['title'] ?? '',
+                    'autori' => implode(', ', $info['authors'] ?? []),
+                    'descrizione' => $info['description'] ?? 'Nessuna descrizione disponibile.',
+                    'copertina' => $info['imageLinks']['thumbnail'] ?? '',
+                    'isbn' => $info['industryIdentifiers'][0]['identifier'] ?? '',
+                    'previewLink' => $info['previewLink'] ?? '#'
+                ];
+            }
+        }
+    
+        return $risultati;
+    }
+    
 }
