@@ -31,11 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .user-icon {
+            width: 50px;
+            height: 50px;
+            transition: opacity 0.2s;
+        }
+
+        .user-icon:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
 <div class="container mt-5">
-    <!-- Riquadro bianco contenente logo, login e form di ricerca -->
     <div class="card mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -45,7 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <?php
                     if (isset($_SESSION['autenticato'])) {
-                        echo '<a href="logout.php" class="btn btn-danger">Logout</a>';
+                        echo '<a href="personalArea.php">
+                                <img src="extra/img/user-icon.jpg" alt="Area Personale" title="Area Personale" class="user-icon">
+                              </a>';
                     } else {
                         echo '<a href="login.php" class="btn btn-primary">Login</a>';
                     }
@@ -55,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <?php 
             if (!empty($error)) {
-                echo '<div class="alert alert-warning">' . htmlspecialchars($error) . '</div>';
+                echo '<div class="alert alert-warning">' . $error . '</div>';
             }
             ?>
 
@@ -83,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Contenuto sotto il riquadro bianco -->
     <div class="text-center mt-4">
         <a href="quiz.php" class="btn btn-outline-dark btn-lg px-4 py-2">
             Scopri il libro perfetto per te con un quiz

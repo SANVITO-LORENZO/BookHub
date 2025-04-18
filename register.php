@@ -1,11 +1,8 @@
 <?php
 session_start();
 $errore = isset($_SESSION['errore_registrazione']) ? $_SESSION['errore_registrazione'] : '';
-$successo = isset($_SESSION['successo_registrazione']) ? $_SESSION['successo_registrazione'] : '';
 
-// Pulisci i messaggi dalla sessione dopo averli recuperati
 if(isset($_SESSION['errore_registrazione'])) unset($_SESSION['errore_registrazione']);
-if(isset($_SESSION['successo_registrazione'])) unset($_SESSION['successo_registrazione']);
 ?>
 
 <!DOCTYPE html>
@@ -73,13 +70,6 @@ if(isset($_SESSION['successo_registrazione'])) unset($_SESSION['successo_registr
                         <label for="conferma_password" class="form-label">Conferma Password</label>
                         <input type="password" class="form-control" id="conferma_password" name="conferma_password" required>
                     </div>
-                </div>
-                
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="termini" name="termini" required>
-                    <label class="form-check-label" for="termini">
-                        Accetto i termini e le condizioni di utilizzo
-                    </label>
                 </div>
                 
                 <div class="d-grid gap-2">

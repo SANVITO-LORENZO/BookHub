@@ -5,14 +5,12 @@ require_once 'managers/database.php';
 
 $risultati = array();
 
-// Ottenere tutti i dati per le select dal database usando la funzione generica
 $generi = ottieni_informazioni('generi');
 $umori = ottieni_informazioni('umori');
 $tempi_lettura = ottieni_informazioni('tempi_lettura');
 $lingue = ottieni_informazioni('lingue');
 $fasce_eta = ottieni_informazioni('fasce_eta');
 
-// Gestione POST
 $genere = '';
 $umore = '';
 $tempo = '';
@@ -57,11 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-light">
 <div class="container py-5 position-relative">
-
-    <!-- LOGO IN ALTO A SINISTRA -->
-
-
-    <form method="post" class="bg-white p-4 rounded shadow-sm mb-5">
+<form method="post" class="bg-white p-4 rounded shadow-sm mb-5">
         <div class="row g-3">
         <a href="index.php">
             <img src="extra/img/logo.jpg" alt="BookHub Logo" style="max-height: 50px;" class="img-fluid">
@@ -75,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     if (!empty($generi)) {
                         foreach ($generi as $g) {
-                            echo '<option value="' . htmlspecialchars($g['nome']) . '">' . htmlspecialchars($g['nome']) . '</option>';
+                            echo '<option value="' . $g['nome'] . '">' . $g['nome'] . '</option>';
                         }
                     }
                     ?>
@@ -89,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     if (!empty($umori)) {
                         foreach ($umori as $u) {
-                            echo '<option value="' . htmlspecialchars($u['nome']) . '">' . htmlspecialchars($u['nome']) . '</option>';
+                            echo '<option value="' . $u['nome'] . '">' . $u['nome'] . '</option>';
                         }
                     }
                     ?>
@@ -103,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     if (!empty($tempi_lettura)) {
                         foreach ($tempi_lettura as $t) {
-                            echo '<option value="' . htmlspecialchars($t['nome']) . '">' . htmlspecialchars($t['nome']) . '</option>';
+                            echo '<option value="' . $t['nome']. '">' . $t['nome'] . '</option>';
                         }
                     }
                     ?>
@@ -117,8 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     if (!empty($lingue)) {
                         foreach ($lingue as $l) {
-                            $lingua_value = htmlspecialchars($l['nome']);
-                            echo '<option value="' . $lingua_value . '">' . htmlspecialchars($l['nome']) . '</option>';
+                            $lingua_value = $l['nome'];
+                            echo '<option value="' . $lingua_value . '">' . $l['nome'] . '</option>';
                         }
                     }
                     ?>
@@ -132,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                     if (!empty($fasce_eta)) {
                         foreach ($fasce_eta as $f) {
-                            echo '<option value="' . htmlspecialchars($f['nome']) . '">' . htmlspecialchars($f['nome']) . '</option>';
+                            echo '<option value="' . $f['nome'] . '">' . $f['nome'] . '</option>';
                         }
                     }
                     ?>

@@ -1,7 +1,6 @@
 <?php
-// File: database.php
 
-// Funzione per la connessione al database (mysqli)
+//funzione per la connessione al db
 function connetti_db() {
     $host = "localhost";
     $username = "root";
@@ -20,65 +19,50 @@ function connetti_db() {
 // Funzione per registrare un nuovo utente
 function registra_utente($username, $password, $email, $nome, $cognome) {
     $conn = connetti_db();
-    
-    // Pulisci i dati in input
-    $username = $conn->real_escape_string($username);
-    $email = $conn->real_escape_string($email);
-    $nome = $conn->real_escape_string($nome);
-    $cognome = $conn->real_escape_string($cognome);
-    
-    // Cripta la password con MD5
     $password_md5 = md5($password);
     
-    // Query per inserire il nuovo utente
-    $sql = "INSERT INTO utenti (username, password, email, nome, cognome) 
+    $q = "INSERT INTO utenti (username, password, email, nome, cognome) 
             VALUES ('$username', '$password_md5', '$email', '$nome', '$cognome')";
     
-    if ($conn->query($sql) === TRUE) {
-        $result = "Utente registrato con successo";
+    if ($conn->query($q)) {
+        $result = true;
     } else {
-        $result = "Errore nella registrazione: " . $conn->error;
+        $result = false;
     }
     
     $conn->close();
     return $result;
 }
 
-// Funzione per verificare le credenziali di login
+//Funzione per verificare il login
 function verifica_login($username, $password) {
+
     $conn = connetti_db();
-    
-    // Pulisci i dati in input
-    $username = $conn->real_escape_string($username);
-    
-    // Cripta la password con MD5 per confrontarla con quella nel database
     $password_md5 = md5($password);
     
-    // Query per verificare le credenziali
-    $sql = "SELECT id, username, nome, cognome, email FROM utenti 
+    $q = "SELECT id, username, nome, cognome, email FROM utenti 
             WHERE username = '$username' AND password = '$password_md5'";
     
-    $result = $conn->query($sql);
+    $result = $conn->query($q);
     
     if ($result && $result->num_rows == 1) {
         $_SESSION['autenticato'] = true;
         $_SESSION['username'] = $username;
-        
         $conn->close();
+        return true;
     } else {
-        // Credenziali non valide
         $conn->close();
         return false;
     }
 }
 
-// Funzione generica per ottenere elementi da qualsiasi tabella
+//ottiene informazioni da ogni tabella passata come parametro
 function ottieni_informazioni($tipo) {
     $conn = connetti_db();
     $risultati = [];
     
-    $sql = "SELECT id, nome FROM $tipo ORDER BY nome";
-    $result = $conn->query($sql);
+    $q = "SELECT id, nome FROM $tipo ORDER BY nome";
+    $result = $conn->query($q);
     
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -88,5 +72,45 @@ function ottieni_informazioni($tipo) {
     
     $conn->close();
     return $risultati;
+}
+
+function getUserInfo($username) {
+    $conn = connetti_db();
+    
+    $q = "SELECT id, username, nome, cognome, email FROM utenti WHERE username = '$username'";
+    $result = $conn->query($q);
+    
+    if ($result && $result->num_rows == 1) {
+        $utente = $result->fetch_assoc();
+        $conn->close();
+        return $utente;
+    } else {
+        $conn->close();
+        return null;
+    }
+}
+
+
+function aggiorna_utente($username, $nome, $cognome, $email, $nuova_password = null) {
+    $conn = connetti_db();
+    
+    $query = "UPDATE utenti SET nome = '$nome', cognome = '$cognome', email = '$email'";
+    
+    if (!empty($nuova_password)) {
+        $password_md5 = md5($nuova_password);
+        $query .= ", password = '$password_md5'";
+    }
+
+    $query .= " WHERE username = '$username'";
+    
+    $risultato = $conn->query($query);
+    
+    $conn->close();
+    
+    if ($risultato) {
+        return true;
+    } else {
+        return "Errore durante l'aggiornamento" ;
+    }
 }
 ?>
