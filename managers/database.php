@@ -113,4 +113,26 @@ function aggiorna_utente($username, $nome, $cognome, $email, $nuova_password = n
         return "Errore durante l'aggiornamento" ;
     }
 }
+
+function getComments($isbn): array {
+    $conn = connetti_db();
+    $commenti = [];
+    
+    $q = "SELECT c.testo, u.username, c.data 
+          FROM commenti c 
+          JOIN utenti u ON c.utente_id = u.id 
+          WHERE c.isbn = '$isbn' 
+          ORDER BY c.data DESC";
+    
+    $result = $conn->query($q);
+    
+    if ($result && $result->num_rows > 0) { 
+        while ($row = $result->fetch_assoc()) {
+            $commenti[] = $row;
+        }
+    }
+    
+    $conn->close();
+    return $commenti; 
+}
 ?>
