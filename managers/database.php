@@ -135,4 +135,70 @@ function getComments($isbn): array {
     $conn->close();
     return $commenti; 
 }
+
+function aggiungiCommento($isbn, $username, $testo) {
+    $conn = connetti_db();
+    
+    // Prima ottieni l'ID dell'utente partendo dallo username
+    $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
+    $result = $conn->query($q_utente);
+    
+    if (!$result || $result->num_rows === 0) {
+        $conn->close();
+        return false;
+    }
+    
+    $utente = $result->fetch_assoc();
+    $utente_id = $utente['id'];
+    
+    // Data corrente in formato MySQL
+    $data = date('Y-m-d H:i:s');
+    
+    // Proteggi il testo da SQL injection
+    $testo_sicuro = $conn->real_escape_string($testo);
+    
+    // Inserisci il commento
+    $q_commento = "INSERT INTO commenti (isbn, utente_id, testo, data) 
+                  VALUES ('$isbn', '$utente_id', '$testo_sicuro', '$data')";
+    
+    $risultato = $conn->query($q_commento);
+    
+    $conn->close();
+    return $risultato ? true : false;
+}
+
+function aggiungiPreferito($isbn, $username) {
+    $conn = connetti_db();
+    
+    // Prima ottieni l'ID dell'utente partendo dallo username
+    $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
+    $result = $conn->query($q_utente);
+    
+    if (!$result || $result->num_rows === 0) {
+        $conn->close();
+        return "Utente non trovato";
+    }
+    
+    $utente = $result->fetch_assoc();
+    $utente_id = $utente['id'];
+    
+    // Verifica se il libro è già tra i preferiti
+    $q_verifica = "SELECT id FROM preferiti WHERE isbn = '$isbn' AND utente_id = $utente_id";
+    $result_verifica = $conn->query($q_verifica);
+    
+    if ($result_verifica && $result_verifica->num_rows > 0) {
+        $conn->close();
+        return "Questo libro è già nei tuoi preferiti";
+    }
+    
+    
+    // Inserisci il preferito
+    $q_preferito = "INSERT INTO preferiti (isbn, utente_id) 
+                   VALUES ('$isbn', '$utente_id')";
+    
+    $risultato = $conn->query($q_preferito);
+    
+    $conn->close();
+    return $risultato ? true : "Errore durante l'aggiunta ai preferiti";
+}
 ?>
