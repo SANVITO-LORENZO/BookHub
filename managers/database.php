@@ -26,7 +26,8 @@ function registra_utente($username, $password, $email, $nome, $cognome) {
     
     if ($conn->query($q)) {
         $result = true;
-    } else {
+    } 
+    else {
         $result = false;
     }
     
@@ -36,7 +37,6 @@ function registra_utente($username, $password, $email, $nome, $cognome) {
 
 //Funzione per verificare il login
 function verifica_login($username, $password) {
-
     $conn = connetti_db();
     $password_md5 = md5($password);
     
@@ -50,7 +50,8 @@ function verifica_login($username, $password) {
         $_SESSION['username'] = $username;
         $conn->close();
         return true;
-    } else {
+    } 
+    else {
         $conn->close();
         return false;
     }
@@ -84,7 +85,8 @@ function getUserInfo($username) {
         $utente = $result->fetch_assoc();
         $conn->close();
         return $utente;
-    } else {
+    } 
+    else {
         $conn->close();
         return null;
     }
@@ -109,8 +111,9 @@ function aggiorna_utente($username, $nome, $cognome, $email, $nuova_password = n
     
     if ($risultato) {
         return true;
-    } else {
-        return "Errore durante l'aggiornamento" ;
+    } 
+    else {
+        return "Errore durante l'aggiornamento";
     }
 }
 
@@ -139,7 +142,6 @@ function getComments($isbn): array {
 function aggiungiCommento($isbn, $username, $testo) {
     $conn = connetti_db();
     
-    // Prima ottieni l'ID dell'utente partendo dallo username
     $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
     $result = $conn->query($q_utente);
     
@@ -151,38 +153,35 @@ function aggiungiCommento($isbn, $username, $testo) {
     $utente = $result->fetch_assoc();
     $utente_id = $utente['id'];
     
-    // Data corrente in formato MySQL
     $data = date('Y-m-d H:i:s');
     
-    // Proteggi il testo da SQL injection
-    $testo_sicuro = $conn->real_escape_string($testo);
-    
-    // Inserisci il commento
     $q_commento = "INSERT INTO commenti (isbn, utente_id, testo, data) 
-                  VALUES ('$isbn', '$utente_id', '$testo_sicuro', '$data')";
+                  VALUES ('$isbn', '$utente_id', '$testo', '$data')";
     
     $risultato = $conn->query($q_commento);
     
     $conn->close();
-    return $risultato ? true : false;
+    if ($risultato) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function aggiungiPreferito($isbn, $username) {
     $conn = connetti_db();
     
-    // Prima ottieni l'ID dell'utente partendo dallo username
+
     $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
     $result = $conn->query($q_utente);
     
-    if (!$result || $result->num_rows === 0) {
+    if (!$result || $result->num_rows == 0) {
         $conn->close();
         return "Utente non trovato";
     }
     
     $utente = $result->fetch_assoc();
     $utente_id = $utente['id'];
-    
-    // Verifica se il libro è già tra i preferiti
     $q_verifica = "SELECT id FROM preferiti WHERE isbn = '$isbn' AND utente_id = $utente_id";
     $result_verifica = $conn->query($q_verifica);
     
@@ -190,15 +189,94 @@ function aggiungiPreferito($isbn, $username) {
         $conn->close();
         return "Questo libro è già nei tuoi preferiti";
     }
-    
-    
-    // Inserisci il preferito
+
     $q_preferito = "INSERT INTO preferiti (isbn, utente_id) 
                    VALUES ('$isbn', '$utente_id')";
     
     $risultato = $conn->query($q_preferito);
     
     $conn->close();
-    return $risultato ? true : "Errore durante l'aggiunta ai preferiti";
+    if ($risultato) {
+        return true;
+    } else {
+        return "Errore durante l'aggiunta ai preferiti";
+    }
+}
+
+function rimuoviPreferito($isbn, $username) {
+    $conn = connetti_db();
+    
+    $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
+    $result = $conn->query($q_utente);
+    
+    if (!$result || $result->num_rows === 0) {
+        $conn->close();
+        return false;
+    }
+    
+    $utente = $result->fetch_assoc();
+    $utente_id = $utente['id'];
+    
+    $q_rimuovi = "DELETE FROM preferiti WHERE isbn = '$isbn' AND utente_id = $utente_id";
+    $risultato = $conn->query($q_rimuovi);
+    
+    $conn->close();
+    if ($risultato) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function getPreferiti($username) {
+    $conn = connetti_db();
+    $preferiti = [];
+    
+    $q_utente = "SELECT id FROM utenti WHERE username = '$username'";
+    $result = $conn->query($q_utente);
+    
+    if (!$result || $result->num_rows === 0) {
+        $conn->close();
+        return [];
+    }
+    
+    $utente = $result->fetch_assoc();
+    $utente_id = $utente['id'];
+    
+    $q_preferiti = "SELECT isbn FROM preferiti WHERE utente_id = $utente_id";
+    
+    $result_preferiti = $conn->query($q_preferiti);
+    
+    if ($result_preferiti && $result_preferiti->num_rows > 0) {
+        while ($row = $result_preferiti->fetch_assoc()) {
+            $preferiti[] = $row;
+        }
+    }
+    
+    $conn->close();
+    return $preferiti;
+}
+
+function getTopPreferiti($numero = 5) {
+    $conn = connetti_db();
+    $top_preferiti = [];
+    
+    $query = "SELECT p.isbn, COUNT(p.isbn) as conteggio 
+              FROM preferiti p 
+              GROUP BY p.isbn 
+              ORDER BY conteggio DESC 
+              LIMIT $numero";
+    
+    $result = $conn->query($query);
+    
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $top_preferiti[] = $row['isbn'];
+        }
+    }
+    
+    $conn->close();
+    return $top_preferiti;
 }
 ?>

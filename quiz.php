@@ -3,7 +3,7 @@ require_once 'classes/Book.php';
 require_once 'managers/render.php';
 require_once 'managers/database.php';
 
-$risultati = array();
+$risultati = [];
 
 $generi = ottieni_informazioni('generi');
 $umori = ottieni_informazioni('umori');

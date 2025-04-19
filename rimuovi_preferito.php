@@ -12,18 +12,19 @@ if (isset($_POST['isbn'])) {
     $libro = Book::fromISBN($isbn);
     
     if ($libro) {
-        $risultato = $libro->aggiungiAiPreferiti($_SESSION['username']);
+        $risultato = $libro->rimuoviDaiPreferiti($_SESSION['username']);
         
-        if ($risultato === true) {
+        if ($risultato) {
             header('Location: book.php?isbn=' . $isbn );
         } else {
+
             header('Location: book.php?isbn=' . $isbn );
         }
     } else {
         header('Location: index.php');
     }
 } else {
-    header('Location: index.php');
+    header('Location: index.php?');
 }
 exit;
 ?>

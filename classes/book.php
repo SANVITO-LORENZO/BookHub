@@ -1,5 +1,6 @@
 <?php
 require_once 'api/googleBooks.php';
+require_once __DIR__ . '/../managers/database.php';
 
 class Book {
     public $titolo;
@@ -35,5 +36,31 @@ class Book {
         }
 
         return $books;
+    }
+
+    public function getComments() {
+        return getComments($this->isbn);
+    }
+
+    public function isPreferito($username) {
+        $preferiti = getPreferiti($username);
+        foreach ($preferiti as $preferito) {
+            if ($preferito['isbn'] === $this->isbn) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function aggiungiAiPreferiti($username) {
+        return aggiungiPreferito($this->isbn, $username);
+    }
+
+    public function rimuoviDaiPreferiti($username) {
+        return rimuoviPreferito($this->isbn, $username);
+    }
+
+    public function aggiungiCommento($username, $testo) {
+        return aggiungiCommento($this->isbn, $username, $testo);
     }
 }

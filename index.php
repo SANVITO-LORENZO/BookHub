@@ -1,25 +1,38 @@
 <?php
 session_start(); 
 require_once 'classes/Book.php';
+require_once 'managers/database.php'; 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_POST['isbn'])) {
+    if (isset($_POST['isbn']) && $_POST['isbn'] != '') {
         $isbn = $_POST['isbn'];
         header("Location: book.php?isbn=" . $isbn);
         exit;
     }
-
-    if (!empty($_POST['string'])) {
+    
+    if (isset($_POST['string']) && $_POST['string'] != '') {
         $query = $_POST['string'];
         $risultati = Book::search($query);
-
-        if (!empty($risultati)) {
+        
+        if ($risultati && count($risultati) > 0) {
             $isbn = $risultati[0]->isbn;
             header("Location: book.php?isbn=" . $isbn);
             exit;
         } else {
             $error = "Nessun libro trovato";
+        }
+    }
+}
+
+$top_libri_isbn = getTopPreferiti(5);
+$top_libri = [];
+
+if ($top_libri_isbn) {
+    foreach ($top_libri_isbn as $isbn) {
+        $libro = Book::fromISBN($isbn);
+        if ($libro) {
+            $top_libri[] = $libro;
         }
     }
 }
@@ -31,17 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .user-icon {
-            width: 50px;
-            height: 50px;
-            transition: opacity 0.2s;
-        }
-
-        .user-icon:hover {
-            opacity: 0.8;
-        }
-    </style>
+    <link rel="stylesheet" href="extra/style.css">
 </head>
 <body class="bg-light">
 
@@ -54,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div>
                     <?php
-                    if (isset($_SESSION['autenticato'])) {
+                    if (isset($_SESSION['autenticato']) && $_SESSION['autenticato']) {
                         echo '<a href="personalArea.php">
                                 <img src="extra/img/user-icon.jpg" alt="Area Personale" title="Area Personale" class="user-icon">
                               </a>';
@@ -66,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <?php 
-            if (!empty($error)) {
+
+            if ($error) {
                 echo '<div class="alert alert-warning">' . $error . '</div>';
             }
             ?>
@@ -101,8 +105,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
     </div>
 
-    <div class="text-center mt-3">
-        <p class="text-muted">Oppure esplora i <strong>10 libri più amati del mese</strong> (in arrivo!)</p>
+    <div class="mt-5">
+        <h3 class="text-center mb-4">I 5 libri più amati del mese</h3>
+        
+        <?php 
+        if (empty($top_libri)) { 
+        ?>
+            <div class="alert alert-info text-center">
+                Non ci sono ancora libri nei preferiti, sii il primo ad aggiungerne!
+            </div>
+        <?php 
+        } else { 
+        ?>
+            <div class="row row-cols-1 row-cols-md-5 g-4">
+            <?php 
+            foreach ($top_libri as $libro) { 
+            ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <?php 
+                        if ($libro->copertina) {
+                        ?>
+                            <img src="<?= $libro->copertina ?>" class="card-img-top" alt="<?= $libro->titolo ?>">
+                        <?php 
+                        } else { 
+                        ?>
+                            <div class="card-img-top bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                                <span>Copertina non disponibile</span>
+                            </div>
+                        <?php 
+                        } 
+                        ?>
+                        <div class="card-body">
+                            <h5 class="card-title"><?= $libro->titolo ?></h5>
+                            <p class="card-text text-muted"><?= $libro->autori ?></p>
+                            <a href="book.php?isbn=<?= $libro->isbn ?>" class="btn btn-sm btn-primary">Dettagli</a>
+                        </div>
+                    </div>
+                </div>
+            <?php 
+            } 
+            ?>
+            </div>
+        <?php 
+        } 
+        ?>
     </div>
 </div>
 

@@ -23,7 +23,7 @@ $username = $_SESSION['username'];
     <div class="card shadow">
     <div class="text-center mb-4 mt-4">
     <a href="index.php">
-        <img src="extra/img/logo.jpg" alt="BookHub Logo" style="max-height: 80px;" class="img-fluid">
+        <img src="extra/img/logo.jpg" style="max-height: 80px;" class="img-fluid">
     </a>
 </div>
         <div class="card-header bg-white py-3">
@@ -43,7 +43,7 @@ $username = $_SESSION['username'];
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Il mio profilo</h5>
-                            <p class="card-text">Gestisci le tue informazioni personali e modifica la password.</p>
+                            <p class="card-text">Modifica le tue informazioni e la tua password.</p>
                             <a href="modifica.php" class="btn btn-outline-primary">Modifica profilo</a>
                         </div>
                     </div>
@@ -53,8 +53,8 @@ $username = $_SESSION['username'];
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">I miei libri preferiti</h5>
-                            <p class="card-text">Accedi alla tua lista di libri preferiti.</p>
-                            <a href="#" class="btn btn-outline-primary">Visualizza preferiti</a>
+                            <p class="card-text">Visualizza la tua lista di libri preferiti.</p>
+                            <a href="preferiti.php" class="btn btn-outline-primary">Visualizza preferiti</a>
                         </div>
                     </div>
                 </div>

@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aggiorna'])) {
     <div class="card shadow">
         <div class="text-center mb-4 mt-4">
     <a href="index.php">
-        <img src="extra/img/logo.jpg" alt="BookHub Logo" style="max-height: 80px;" class="img-fluid">
+        <img src="extra/img/logo.jpg"  style="max-height: 80px;" class="img-fluid">
     </a>
 </div>
         <div class="card-header bg-white py-3">
@@ -140,18 +140,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aggiorna'])) {
                     <h4 class="mb-3">Modifica Password</h4>
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label for="password_attuale" class="form-label">Password Attuale</label>
+                            <label  class="form-label">Password Attuale</label>
                             <input type="password" class="form-control" id="password_attuale" name="password_attuale" required>
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="nuova_password" class="form-label">Nuova Password</label>
+                            <label  class="form-label">Nuova Password</label>
                             <input type="password" class="form-control" id="nuova_password" name="nuova_password">
                             <div class="form-text">Lasciare vuoto per non modificare la password</div>
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="conferma_password" class="form-label">Conferma Nuova Password</label>
+                            <label  class="form-label">Conferma Nuova Password</label>
                             <input type="password" class="form-control" id="conferma_password" name="conferma_password">
                         </div>
                     </div>

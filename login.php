@@ -6,10 +6,11 @@ if (isset($_SESSION['autenticato'])) {
     exit;
 }
 
-$error = $_SESSION['login_error'] ?? '';
-
 if (isset($_SESSION['login_error'])) {
+    $error = $_SESSION['login_error'];
     unset($_SESSION['login_error']);
+} else {
+    $error = '';
 }
 ?>
 
@@ -27,14 +28,15 @@ if (isset($_SESSION['login_error'])) {
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-header bg-white text-center py-3">
-                    <img src="extra/img/logo.jpg" alt="BookHub Logo" style="max-height: 80px;" class="img-fluid">
+                    <img src="extra/img/logo.jpg"  style="max-height: 80px;" class="img-fluid">
                     <h3 class="mt-3">Accedi</h3>
                 </div>
                 <div class="card-body p-4">
-                    <?php if (!empty($error)): ?>
-                        <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
-                    <?php endif; ?>
-                    
+                    <?php
+                        if (!empty($error)) {
+                            echo '<div class="alert alert-danger">' . $error . '</div>';
+                        }
+                    ?>
                     <form method="POST" action="controllers/loginControllers.php">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>

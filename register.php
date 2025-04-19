@@ -1,8 +1,11 @@
 <?php
 session_start();
-$errore = isset($_SESSION['errore_registrazione']) ? $_SESSION['errore_registrazione'] : '';
-
-if(isset($_SESSION['errore_registrazione'])) unset($_SESSION['errore_registrazione']);
+if (isset($_SESSION['errore_registrazione'])) {
+    $errore = $_SESSION['errore_registrazione'];
+    unset($_SESSION['errore_registrazione']);
+} else {
+    $errore = '';
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,11 +34,11 @@ if(isset($_SESSION['errore_registrazione'])) unset($_SESSION['errore_registrazio
         
         <div class="card-body p-4">
             <?php if(!empty($errore)): ?>
-                <div class="alert alert-danger"><?php echo htmlspecialchars($errore); ?></div>
+                <div class="alert alert-danger"><?php echo $errore; ?></div>
             <?php endif; ?>
             
             <?php if(!empty($successo)): ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($successo); ?></div>
+                <div class="alert alert-success"><?php echo $successo; ?></div>
             <?php endif; ?>
             
             <form action="controllers/registerControllers.php" method="POST">
