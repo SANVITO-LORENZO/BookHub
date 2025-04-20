@@ -1,5 +1,5 @@
 <?php
-require_once 'classes/Book.php';
+require_once 'classes/book.php';
 require_once 'managers/render.php';
 require_once 'managers/database.php';
 

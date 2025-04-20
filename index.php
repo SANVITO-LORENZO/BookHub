@@ -1,6 +1,6 @@
 <?php
 session_start(); 
-require_once 'classes/Book.php';
+require_once 'classes/book.php';
 require_once 'managers/database.php'; 
 $error = '';
 

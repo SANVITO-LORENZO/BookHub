@@ -50,14 +50,9 @@ if ($profilo['profilo_pubblico'] || $username_profilo === $username_corrente) {
             
             <div class="card-header bg-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">Profilo di <?php echo htmlspecialchars($username_profilo); ?></h3>
+                    <h3 class="mb-0">Profilo di <?php echo $username_profilo; ?></h3>
                     <?php 
-                    $tmp = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
-                    if ($tmp) {
-                        echo '<a href="' . $tmp . '" class="btn btn-primary">Indietro</a>';
-                    } else {
                         echo '<a href="personalArea.php" class="btn btn-primary">Indietro</a>';
-                    }
                     ?>
                 </div>
             </div>
