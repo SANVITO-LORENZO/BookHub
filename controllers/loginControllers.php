@@ -3,8 +3,17 @@ session_start();
 require_once '../managers/database.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+    if (isset($_POST['username'])) {
+        $username = trim($_POST['username']);
+    } else {
+        $username = '';
+    }
+
+    if (isset($_POST['password'])) {
+        $password = $_POST['password'];
+    } else {
+        $password = '';
+    }
 
     if (empty($username) || empty($password)) {
         $_SESSION['login_error'] = "Username e password sono obbligatori";

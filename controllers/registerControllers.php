@@ -4,13 +4,41 @@ session_start();
 require_once '../classes/user.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST["nome"] ?? '';
-    $cognome = $_POST["cognome"] ?? '';
-    $username = $_POST["username"] ?? '';
-    $email = $_POST["email"] ?? '';
-    $password = $_POST["password"] ?? '';
-    
-    $conferma_password = $_POST["conferma_password"] ?? '';
+    if (isset($_POST["nome"])) {
+        $nome = $_POST["nome"];
+    } else {
+        $nome = '';
+    }
+
+    if (isset($_POST["cognome"])) {
+        $cognome = $_POST["cognome"];
+    } else {
+        $cognome = '';
+    }
+
+    if (isset($_POST["username"])) {
+        $username = $_POST["username"];
+    } else {
+        $username = '';
+    }
+
+    if (isset($_POST["email"])) {
+        $email = $_POST["email"];
+    } else {
+        $email = '';
+    }
+
+    if (isset($_POST["password"])) {
+        $password = $_POST["password"];
+    } else {
+        $password = '';
+    }
+
+    if (isset($_POST["conferma_password"])) {
+        $conferma_password = $_POST["conferma_password"];
+    } else {
+        $conferma_password = '';
+    }
     
     $user = new User();
     
